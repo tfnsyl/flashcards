@@ -1,7 +1,9 @@
 import CardItem from "../interfaces/CardItem";
 import Colors from "../constants/Colors";
-import { Button, Card, CardActions, CardContent } from "@material-ui/core";
-import React, { useState } from "react";
+import { Button, Card, CardContent } from "@material-ui/core";
+import { useState } from "react";
+import "./FlashCard.css";
+import { ArrowBack, ArrowForward } from "@material-ui/icons";
 
 type CardProps = {
   flashCards: CardItem[];
@@ -27,26 +29,30 @@ const FlashCard = ({ flashCards }: CardProps): JSX.Element => {
       <Card
         style={{
           backgroundColor: color,
-          borderRadius: "10px",
-          width: "300px",
-          margin: "20px",
+          width: "440px",
         }}
       >
         <CardContent
           style={{
             color: "white",
-            height: "100px",
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
+            height: "400px",
           }}
         >
-          {activeCard.name} =&gt; {activeCard.description}
+          <Button onClick={prevButtonClickHandler} className="btnPrev">
+            <ArrowBack />
+          </Button>
+
+          <div className="card">
+            <div className="content">
+              <div className="front">{activeCard.name}</div>
+              <div className="back">{activeCard.description}</div>
+            </div>
+          </div>
+
+          <Button onClick={nextButtonClickHandler} className="btnForward">
+            <ArrowForward />
+          </Button>
         </CardContent>
-        <CardActions>
-          <Button onClick={prevButtonClickHandler}> PREV </Button>
-          <Button onClick={nextButtonClickHandler}> NEXT </Button>
-        </CardActions>
       </Card>
     </div>
   );
