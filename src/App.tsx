@@ -5,11 +5,11 @@ import FlashCard from "./components/FlashCard";
 import UserStats from "./components/UserStats";
 import { UserCards, User, Stats } from "./interfaces/UserItem";
 import CardItem from "./interfaces/CardItem";
-import ApiService from "./utilities/ApiService";
 import ArrayHelper from "./utilities/ArrayHelper";
 import TimerHelper from "./utilities/TimerHelper";
 import { Dialog } from "@material-ui/core";
 import WordTypes from "./constants/WordTypes";
+import CardsList from "./data/db.json";
 
 interface AppState {
   cardsList: CardItem[];
@@ -44,14 +44,16 @@ class App extends React.Component<any, AppState> {
   }
 
   async getUser() {
-    const cardsList = this.state.cardsList;
+    const dataFromStorage = localStorage.getItem("cards");
 
-    const cards: UserCards = await ApiService.getApi("usercards");
+    const cards: UserCards = dataFromStorage
+      ? JSON.parse(dataFromStorage)
+      : { review: [], learning: [], master: [] };
+
     const stats: Stats = {
-      review: cardsList.filter((card) => cards.review.includes(card.id)).length,
-      master: cardsList.filter((card) => cards.master.includes(card.id)).length,
-      learning: cardsList.filter((card) => cards.learning.includes(card.id))
-        .length,
+      review: cards.review.length,
+      master: cards.master.length,
+      learning: cards.learning.length,
     };
 
     const user: User = {
@@ -63,7 +65,7 @@ class App extends React.Component<any, AppState> {
   }
 
   async componentDidMount() {
-    const cardsList: CardItem[] = await ApiService.getApi("cards");
+    const cardsList: CardItem[] = CardsList.cards;
     console.warn("cardsList", cardsList);
     this.setState({ cardsList });
 
@@ -151,7 +153,7 @@ class App extends React.Component<any, AppState> {
       loading: true,
     });
 
-    await ApiService.putApi("userCards", cards);
+    localStorage.setItem("cards", JSON.stringify(cards));
 
     const user = await this.getUser();
     this.createShuffledAnswers();
