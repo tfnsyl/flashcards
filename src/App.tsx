@@ -11,6 +11,14 @@ import { Dialog } from "@material-ui/core";
 import WordTypes from "./constants/WordTypes";
 import CardsList from "./data/db.json";
 
+declare global {
+  interface Window {
+    responsiveVoice: any;
+  }
+}
+
+window.responsiveVoice = window.responsiveVoice || {};
+
 interface AppState {
   cardsList: CardItem[];
   questionCards: CardItem[];

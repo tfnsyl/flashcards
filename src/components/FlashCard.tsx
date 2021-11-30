@@ -1,9 +1,9 @@
 import CardItem from "../interfaces/CardItem";
 import Colors from "../constants/Colors";
-import { Button, Card, CardContent } from "@material-ui/core";
+import { Button, Card, CardContent, Box, IconButton } from "@material-ui/core";
 import { useState } from "react";
 import "./FlashCard.css";
-import { ArrowBack, ArrowForward } from "@material-ui/icons";
+import { ArrowBack, ArrowForward, Audiotrack } from "@material-ui/icons";
 
 type CardProps = {
   flashCards: CardItem[];
@@ -20,6 +20,10 @@ const FlashCard = ({ flashCards }: CardProps): JSX.Element => {
   const nextButtonClickHandler = () => {
     if (activeCardIndex < flashCards.length - 1)
       setActiveCardIndex(activeCardIndex + 1);
+  };
+
+  const audioButtonClickHandler = () => {
+    window.responsiveVoice.speak(activeCard.name);
   };
 
   const activeCard = flashCards[activeCardIndex];
@@ -53,6 +57,23 @@ const FlashCard = ({ flashCards }: CardProps): JSX.Element => {
             <ArrowForward />
           </Button>
         </CardContent>
+
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "10px",
+          }}
+        >
+          <IconButton
+            color="primary"
+            style={{ backgroundColor: "#ddd" }}
+            onClick={audioButtonClickHandler}
+            className="btnAudio"
+          >
+            <Audiotrack />
+          </IconButton>
+        </Box>
       </Card>
     </div>
   );
