@@ -165,7 +165,7 @@ class App extends React.Component<any, AppState> {
     console.log(wordType, "box will open");
 
     const cards = this.state.user.cards;
-    let idList: string[];
+    let idList: string[] = [];
 
     switch (wordType) {
       case WordTypes.Learning:
@@ -183,7 +183,9 @@ class App extends React.Component<any, AppState> {
       idList.includes(card.id)
     );
 
-    this.setState({ openDialog: true, flashCards });
+    if (idList.length) {
+      this.setState({ openDialog: true, flashCards });
+    }
   }
 
   handleDialogClose() {
