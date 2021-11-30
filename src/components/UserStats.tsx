@@ -2,23 +2,23 @@ import { User } from "./../interfaces/UserItem";
 import Colors from "./../constants/Colors";
 import WordTypes from "./../constants/WordTypes";
 import { Card, CardContent, Grid, Box, Divider } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 type UserStatProps = {
   user: User;
-  wordsBoxHandler: Function;
 };
 
-const UserStats = ({ user, wordsBoxHandler }: UserStatProps): JSX.Element => {
+const UserStats = ({ user }: UserStatProps): JSX.Element => {
   const openWordsToLearn = () => {
-    wordsBoxHandler(WordTypes.Learning);
+    //    wordsBoxHandler(WordTypes.Learning);
   };
 
   const openWordsToReview = () => {
-    wordsBoxHandler(WordTypes.Review);
+    //  wordsBoxHandler(WordTypes.Review);
   };
 
   const openWordsToMaster = () => {
-    wordsBoxHandler(WordTypes.Mastered);
+    //wordsBoxHandler(WordTypes.Mastered);
   };
 
   return (
@@ -35,44 +35,50 @@ const UserStats = ({ user, wordsBoxHandler }: UserStatProps): JSX.Element => {
             fontSize: "18px",
           }}
         >
-          <Grid style={{ cursor: "pointer" }} onClick={openWordsToLearn}>
-            <div>Words To Learn:</div>
-            <div
-              style={{
-                fontSize: "18px",
-                fontWeight: "bold",
-                color: Colors.Learning,
-              }}
-            >
-              {user.stats.learning}
-            </div>
-          </Grid>
+          <Link to={"/flashcard/" + WordTypes.Learning}>
+            <Grid>
+              <div>Words To Learn:</div>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  color: Colors.Learning,
+                }}
+              >
+                {user.stats.learning}
+              </div>
+            </Grid>
+          </Link>
           <Divider orientation="vertical" variant="middle" flexItem />
-          <Grid style={{ cursor: "pointer" }} onClick={openWordsToReview}>
-            <div>Words To Review: </div>
-            <div
-              style={{
-                fontSize: "18px",
-                fontWeight: "bold",
-                color: Colors.Review,
-              }}
-            >
-              {user.stats.review}
-            </div>
-          </Grid>
+          <Link to={"/flashcard/" + WordTypes.Review}>
+            <Grid style={{ cursor: "pointer" }} onClick={openWordsToReview}>
+              <div>Words To Review: </div>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  color: Colors.Review,
+                }}
+              >
+                {user.stats.review}
+              </div>
+            </Grid>
+          </Link>
           <Divider orientation="vertical" variant="middle" flexItem />
-          <Grid style={{ cursor: "pointer" }} onClick={openWordsToMaster}>
-            <div>Words Mastered: </div>
-            <div
-              style={{
-                fontSize: "18px",
-                fontWeight: "bold",
-                color: Colors.Mastered,
-              }}
-            >
-              {user.stats.master}
-            </div>
-          </Grid>
+          <Link to={"/flashcard/" + WordTypes.Mastered}>
+            <Grid style={{ cursor: "pointer" }} onClick={openWordsToMaster}>
+              <div>Words Mastered: </div>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  color: Colors.Mastered,
+                }}
+              >
+                {user.stats.master}
+              </div>
+            </Grid>
+          </Link>
         </Box>
       </CardContent>
     </Card>

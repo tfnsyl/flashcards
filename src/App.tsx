@@ -7,9 +7,10 @@ import { UserCards, User, Stats } from "./interfaces/UserItem";
 import CardItem from "./interfaces/CardItem";
 import ArrayHelper from "./utilities/ArrayHelper";
 import TimerHelper from "./utilities/TimerHelper";
-import { Dialog } from "@material-ui/core";
-import WordTypes from "./constants/WordTypes";
+import { Button } from "@material-ui/core";
 import CardsList from "./data/db.json";
+import { Routes, Route, Link } from "react-router-dom";
+import { CloseRounded } from "@material-ui/icons";
 
 declare global {
   interface Window {
@@ -26,18 +27,14 @@ interface AppState {
   correctCard: CardItem;
   user: User;
   loading: boolean;
-  openDialog: boolean;
 }
 class App extends React.Component<any, AppState> {
   constructor(props: any) {
     super(props);
 
     this.onAnswer = this.onAnswer.bind(this);
-    this.onWordBoxClick = this.onWordBoxClick.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
 
     this.state = {
-      openDialog: false,
       cardsList: [],
       questionCards: [],
       correctCard: { id: "", name: "", description: "" },
@@ -169,37 +166,6 @@ class App extends React.Component<any, AppState> {
     this.setState({ user, loading: false });
   }
 
-  onWordBoxClick(wordType: string) {
-    console.log(wordType, "box will open");
-
-    const cards = this.state.user.cards;
-    let idList: string[] = [];
-
-    switch (wordType) {
-      case WordTypes.Learning:
-        idList = cards.learning;
-        break;
-      case WordTypes.Review:
-        idList = cards.review;
-        break;
-      case WordTypes.Mastered:
-        idList = cards.master;
-        break;
-    }
-
-    const flashCards = this.state.cardsList.filter((card) =>
-      idList.includes(card.id)
-    );
-
-    if (idList.length) {
-      this.setState({ openDialog: true, flashCards });
-    }
-  }
-
-  handleDialogClose() {
-    this.setState({ openDialog: false });
-  }
-
   render() {
     return (
       <div className="App">
@@ -208,23 +174,79 @@ class App extends React.Component<any, AppState> {
             <div>Loading...</div>
           ) : (
             <>
-              <Dialog
-                onClose={this.handleDialogClose}
-                open={this.state.openDialog}
-              >
-                <FlashCard flashCards={this.state.flashCards} />
-              </Dialog>
+              <div style={{ position: "absolute", top: "50px" }}>
+                <UserStats user={this.state.user} />
+              </div>
 
-              <UserStats
-                user={this.state.user}
-                wordsBoxHandler={this.onWordBoxClick}
-              />
-              <QuestionCard
-                questionCards={this.state.questionCards}
-                correctCard={this.state.correctCard}
-                handler={this.onAnswer}
-                user={this.state.user}
-              />
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <div style={{ padding: "10px" }}>
+                      <Link to="/quiz">
+                        <Button
+                          style={{
+                            fontSize: "22px",
+                            color: "#666",
+                            fontWeight: "bold",
+                            backgroundColor: "#ccc",
+                          }}
+                        >
+                          EN to TR QUIZ
+                        </Button>
+                      </Link>
+                    </div>
+                  }
+                ></Route>
+
+                <Route
+                  path="/*"
+                  element={
+                    <Link to="/">
+                      <Button
+                        style={{
+                          color: "white",
+                          position: "absolute",
+                          right: "0",
+                        }}
+                      >
+                        <CloseRounded />
+                      </Button>
+                    </Link>
+                  }
+                ></Route>
+              </Routes>
+              <div style={{ margin: "20px" }}>
+                {/*
+          A <Switch> looks through all its children <Route>
+          elements and renders the first one whose path
+          matches the current URL. Use a <Switch> any time
+          you have multiple routes, but you want only one
+          of them to render at a time
+        */}
+                <Routes>
+                  <Route
+                    path="/quiz"
+                    element={
+                      <QuestionCard
+                        questionCards={this.state.questionCards}
+                        correctCard={this.state.correctCard}
+                        handler={this.onAnswer}
+                        user={this.state.user}
+                      />
+                    }
+                  ></Route>
+                  <Route
+                    path="/flashcard/:id"
+                    element={
+                      <FlashCard
+                        cardsList={this.state.cardsList}
+                        user={this.state.user}
+                      />
+                    }
+                  ></Route>
+                </Routes>
+              </div>
             </>
           )}
         </header>

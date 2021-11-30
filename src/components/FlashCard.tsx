@@ -1,15 +1,39 @@
 import CardItem from "../interfaces/CardItem";
+import { User } from "../interfaces/UserItem";
 import Colors from "../constants/Colors";
 import { Button, Card, CardContent, Box, IconButton } from "@material-ui/core";
+import { ArrowBack, ArrowForward, Audiotrack } from "@material-ui/icons";
+import { useLocation } from "react-router-dom";
+import WordTypes from "../constants/WordTypes";
 import { useState } from "react";
 import "./FlashCard.css";
-import { ArrowBack, ArrowForward, Audiotrack } from "@material-ui/icons";
 
 type CardProps = {
-  flashCards: CardItem[];
+  cardsList: CardItem[];
+  user: User;
 };
 
-const FlashCard = ({ flashCards }: CardProps): JSX.Element => {
+const FlashCard = ({ cardsList, user }: CardProps): JSX.Element => {
+  const wordType = useLocation().pathname.split("/")[2];
+
+  console.log(wordType, "box will open");
+
+  let idList: string[] = [];
+
+  switch (wordType) {
+    case WordTypes.Learning:
+      idList = user.cards.learning;
+      break;
+    case WordTypes.Review:
+      idList = user.cards.review;
+      break;
+    case WordTypes.Mastered:
+      idList = user.cards.master;
+      break;
+  }
+
+  const flashCards = cardsList.filter((card) => idList.includes(card.id));
+
   const color = Colors.Default;
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
@@ -27,6 +51,9 @@ const FlashCard = ({ flashCards }: CardProps): JSX.Element => {
   };
 
   const activeCard = flashCards[activeCardIndex];
+
+  if (!flashCards.length)
+    return <div style={{ height: "500px" }}>No {wordType} words yet.</div>;
 
   return (
     <div>
